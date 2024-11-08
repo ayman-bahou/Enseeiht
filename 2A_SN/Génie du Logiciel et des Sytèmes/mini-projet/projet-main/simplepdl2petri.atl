@@ -1,0 +1,81 @@
+-- @path petrinet=/fr.n7.petriNet/model/petriNet.ecore
+-- @path simplepdl=/fr.n7.simplePDL/SimplePDL.ecore
+
+module simplepdl2petri;
+create OUT : petrinet from IN : simplepdl;
+
+
+-- @main SimplePDL2PetriNet
+-- Transformer les processus en réseaux de Petri
+rule SimplePDL2PetriNet {
+	from processus : simplepdl!Process
+	to net : petrinet!petriNet (name <- processus.name)
+}
+
+-- @main WorkSequence2Arc
+-- Transformer les WorkDefinitions en places et transitions
+rule WorkDefinition2Places {
+	from workdef : simplepdl!WorkDefinition
+	to
+		-- Création des places
+		placeready : petrinet!Place (name <- workdef.name + '_ready',
+									 jetons <- 1),
+		placeStarted : petrinet!Place (name <- workdef.name + '_Started',
+									 jetons <- 0),
+		placeFinished : petrinet!Place (name <- workdef.name + '_Finished',
+									 jetons <- 0),
+		placeRunning : petrinet!Place (name <- workdef.name + '_Running',
+									 jetons <- 0),
+									
+		-- Création des transitions
+		transitionStart : petrinet!Transition (name <- workdef.name + '_Start'),
+		transitionFinish : petrinet!Transition (name <- workdef.name + '_Finish'),
+		
+		-- Création des arcs
+		arcread_arcy2Start : petrinet!Arc (jetons <- 1,
+									   type <- #normal,
+									   source <- placeready,
+									   destination <- transitionStart),
+		arcStart2Running : petrinet!Arc (jetons <- 1,
+									   type <- #normal,
+									   source <- transitionStart,
+									   destination <- placeRunning),
+		arcStart2Started : petrinet!Arc (jetons <- 1,
+									   type <- #normal,
+									   source <- transitionStart,
+									   destination <- placeStarted),
+		arcRunning2Finish : petrinet!Arc (jetons <- 1,
+									   type <- #normal,
+									   source <- placeRunning,
+									   destination <- transitionFinish),
+		arcFinish2Finished : petrinet!Arc (jetons <- 1,
+									   type <- #normal,
+									   source <- transitionFinish,
+									   destination <- placeFinished)
+}
+
+rule WorkSequence2Arc {
+	from workseq : simplepdl!WorkSequence
+	to read_arcArc : petrinet!Arc (jetons <- 1,
+							   type <- #read_arc,
+							   source <- if (workseq.linkType = #startToStart or workseq.linkType = #startToFinish) then thisModule.resolveTemp(workseq.predecessor, 'placeStarted') else thisModule.resolveTemp(workseq.predecessor, 'placeFinished') endif,
+							   destination <- if (workseq.linkType = #startToStart or workseq.linkType = #finishToStart) then thisModule.resolveTemp(workseq.successor, 'transitionStart') else thisModule.resolveTemp(workseq.successor, 'transitionFinish') endif)		
+}
+
+rule Ressource2Place {
+	from ressource : simplepdl!Ressource
+	to placeRessource : petrinet!Place (name <- ressource.name + '_Ressource', jetons <- ressource.quantity)
+}
+
+rule Allocation2Arc {
+	from allocation : simplepdl!Allocation
+	to arcRessource2Start : petrinet!Arc(jetons <- allocation.occurence,
+									   type <- #normal,
+									   source <- thisModule.resolveTemp(allocation.ressource, 'placeRessource'),
+									   destination <- thisModule.resolveTemp(allocation.workdefinition, 'transitionStart')),
+	   arcFinish2Ressource : petrinet!Arc(jetons <- allocation.occurence,
+									   type <- #normal,
+									   source <- thisModule.resolveTemp(allocation.workdefinition, 'transitionFinish'),
+									   destination <- thisModule.resolveTemp(allocation.ressource, 'placeRessource'))
+}
+									 

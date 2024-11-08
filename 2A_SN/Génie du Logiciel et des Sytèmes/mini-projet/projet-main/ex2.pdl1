@@ -1,0 +1,14 @@
+process ex1 {
+wd activite1
+wd activite2 {
+	alloc 1 of ressource2
+}
+wd activite3 {
+	alloc 5 of ressource1
+}
+ws f2s from activite1 to activite2
+ws s2s from activite2 to activite3
+note "guidance"
+res ressource1 qte 5
+res ressource2 qte 2
+}
