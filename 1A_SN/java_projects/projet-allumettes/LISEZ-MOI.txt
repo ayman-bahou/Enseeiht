@@ -1,0 +1,57 @@
+Nom       : Bahou
+Prénom    : Ayman
+Groupe TP : J
+
+Les « ... » indiquent les endroits à compléter.
+
+=====[ Temps passé ]============================================================
+
+Ces informations de temps sont demandées à titre indicatif et ne sont pas
+prises en compte dans la notation du projet.
+
+
+* Temps passé sur la V1 : 13 heures 00 minutes
+* Temps passé sur la V2 : 6 heures 30 minutes
+
+Pour la V2 on ne tiendra pas compte du temps passé sur la V1.
+
+
+=====[ Questions ]==============================================================
+
+--------------------------------------------------------------------------------
+Pourquoi l'exception OperationInterditeException ne peut pas être définie
+comme vérifiée par le compilateur ?
+--------------------------------------------------------------------------------
+
+Rendre OperationInterditeException une exception vérifiée va nous obliger à ajouter des blocs try-catch partout où cette exception peut être levée. ce qui peut rendre notre code plus compliqué et moins souple.
+
+
+--------------------------------------------------------------------------------
+Expliquer ce qu'il faut faire pour ajouter un nouveau niveau de jeu, par
+exemple la stratégie lente (C13).  Pour plus de précision, on numérotera
+les étapes à faire.
+--------------------------------------------------------------------------------
+
+1- Il faut créer une nouvelle classe strategieLente qui réalise l'interface strategieJoueur.
+2- Il faut implanter la strategie Lente en redéfinissant la méthode getPrise.
+3- Dans la classe Jouer et plus précisemment la méthode strategie il faudra ajouter un 'else if' juste avant le 'else'
+qui traite la condition s.equals("lente") et retourne un nouveau objet de type strategieLente(return new strategieLente()).
+
+--------------------------------------------------------------------------------
+Expliquer ce qui permet, dans votre conception, de changer dynamiquement
+(en cours d'exécution du programme) la stratégie d'un joueur (C14).
+--------------------------------------------------------------------------------
+
+dans ma conception changer la strategie n'est pas possible en cours d'une partie, même si ma classe joueur comporte la methode setStrategie.
+
+
+=====[ Explications ]===========================================================
+
+--------------------------------------------------------------------------------
+Donner ici les explications supplémentaires utiles à la compréhension du
+travail rendu.
+--------------------------------------------------------------------------------
+
+...
+
+--------------------------------------------------------------------------------

@@ -1,0 +1,36 @@
+Nom       : Bahou
+Prénom    : Ayman
+Groupe TP : J
+
+
+Consigne :  Ci-dessous, répondre à la place des « ... ».
+
+
+=====[ Temps ]==================================================================
+
+Temps passé sur la V1 : 20 heures 00 minutes
+Temps passé sur la V2 : ... heures ... minutes
+Pour la V2 on ne tiendra pas compte du temps passé sur la V1.
+Bien sûr, les temps renseignés ici ne sont pas pris en compte dans la notation.
+
+
+=====[ Questions ]==============================================================
+
+Indiquer la relation UML entre Cercle et le Point centre du cercle.
+-------------------------------------------------------------------
+
+C'est une relation de composition,puisque en détruisant un objet cercle on détruit également un point qui est son centre.
+
+
+Comment est réalisée l'exigence E18 ?
+-------------------------------------
+
+Cette exigence est réalisée à travers le fait que les attributs de classe cercle sont Private.
+
+
+=====[ Explications ]===========================================================
+
+(Facultatif) Donner ici les explications supplémentaires utiles à la
+compréhension du travail rendu.
+
+...
