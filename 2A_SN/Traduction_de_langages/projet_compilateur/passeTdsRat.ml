@@ -1,9 +1,14 @@
 (* Module de la passe de gestion des identifiants *)
 (* doit être conforme à l'interface Passe *)
+module PasseTdsRat : Passe.Passe with type t1=Ast.AstSyntax.programme and type t2=Ast.AstTds.programme =
+struct
+
 open Tds
 open Exceptions
-open Ast
+open Ast 
 open Type
+
+
 type t1 = Ast.AstSyntax.programme
 type t2 = Ast.AstTds.programme
 
@@ -207,7 +212,7 @@ match chercherLocalement tds v with
 (*tranforme la fonction en une fonction de type AstTds.fonction*)
 let traite_fonction maintds (AstSyntax.Fonction(t,n,lp,li)) =
 let ltype=List.map(fst) lp in let lvariable=List.map(snd) lp in
-let infor=info_to_info_ast (InfoFun(n,t,ltype)) in
+let infor=info_to_info_ast (InfoFun(n,Undefined,ltype)) in
 (*ajout de la fonction à la tds*)
 ajouter maintds n  infor;
 (*création de tds fille pour ajouter les paramètres dedans *)
@@ -231,13 +236,8 @@ let analyse_tds_fonction maintds (AstSyntax.Fonction(t,n,lp,li))  =
 begin
 match chercherLocalement maintds n with
 |None-> traite_fonction maintds (AstSyntax.Fonction(t,n,lp,li))
-|Some info-> 
-  begin
-  match info_ast_to_info info with
-  |InfoFun(_,_,ltyp)->if (est_compatible_list ltyp (List.map(fst) lp)) then raise (DoubleDeclaration n) 
-  else traite_fonction maintds (AstSyntax.Fonction(t,n,lp,li))
-  |_->raise (MauvaiseUtilisationIdentifiant n)
-end
+|Some _-> 
+  raise (DoubleDeclaration n)
 end
 (* analyser : AstSyntax.programme -> AstTds.programme *)
 (* Paramètre : le programme à analyser *)
@@ -249,3 +249,4 @@ let analyser (AstSyntax.Programme (fonctions,prog)) =
   let nf = List.map (analyse_tds_fonction tds) fonctions in
   let nb = analyse_tds_bloc tds None prog in
   AstTds.Programme (nf,nb)
+end
