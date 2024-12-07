@@ -1,7 +1,5 @@
 (* Module de la passe de gestion des types *)
 (* doit être conforme à l'interface Passe *)
-module PasseTypeRat:Passe.Passe with type t1=Ast.AstTds.programme and type t2=Ast.AstType.programme=
-struct
 
 open Tds
 open Exceptions
@@ -21,8 +19,7 @@ let rec analyse_type_expression e = match e with
         begin
           match info_ast_to_info info with
           |InfoVar(_,t,_,_)->(AstType.Ident info,t)
-          |InfoFun(_,t,_)->(AstType.Ident info,t)
-          |InfoConst(_,_)->(AstType.Ident info,Int)
+          |_->failwith "erreur"
         end
   | AstTds.Binaire (op,e1,e2) ->
       (* Vérification de le bon typage dans les expressions *)
@@ -30,17 +27,16 @@ let rec analyse_type_expression e = match e with
       let (ne1,t1) = analyse_type_expression e1 in
       let (ne2,t2) = analyse_type_expression e2 in
       begin
-      (* Vérification de la cohérence entre les types et l'op binaire et retour du nouveau Binaire avec le type de l'expression *)
-      match (op,t1,t2) with
-      |(Fraction,Int,Int)->(AstType.Binaire (Fraction, ne1, ne2),Rat)
-      |(Plus,Int,Int)->(AstType.Binaire (PlusInt, ne1, ne2),Int)
-      |(Plus,Rat,Rat)->(AstType.Binaire (PlusRat, ne1, ne2),Rat)
-      |(Mult,Int,Int)->(AstType.Binaire (MultInt, ne1, ne2),Int)
-      |(Mult,Rat,Rat)->(AstType.Binaire (MultRat, ne1, ne2),Rat)
-      |(Equ,Int,Int) ->(AstType.Binaire (EquInt, ne1, ne2),Bool)
-      |(Equ,Bool,Bool)->(AstType.Binaire (EquBool, ne1, ne2),Bool)
-      |(Inf,Int,Int)->(AstType.Binaire (Inf, ne1, ne2),Bool)
-      |_->raise (TypeBinaireInattendu (op, t1, t2))
+        match (op,t1,t2) with
+        |(Plus,Int,Int)->(AstType.Binaire(PlusInt,ne1,ne2),Int)
+        |(Plus,Rat,Rat)->(AstType.Binaire(PlusRat,ne1,ne2),Rat)
+        |(Fraction,Int,Int)->(AstType.Binaire(Fraction,ne1,ne2),Rat)
+        |(Mult,Int,Int)->(AstType.Binaire(MultInt,ne1,ne2),Int)
+        |(Mult,Rat,Rat)->(AstType.Binaire(MultRat,ne1,ne2),Rat)
+        |(Equ,Int,Int)->(AstType.Binaire(EquInt,ne1,ne2),Bool)
+        |(Equ,Bool,Bool)->(AstType.Binaire(EquBool,ne1,ne2),Bool)
+        |(Inf,Int,Int)->(AstType.Binaire(Inf,ne1,ne2),Bool)
+        |_->raise (TypeBinaireInattendu(op,t1,t2))
       end
   | AstTds.Unaire (op,e1) ->
       (* Vérification du bon typage dans l'expression *)
@@ -51,42 +47,21 @@ let rec analyse_type_expression e = match e with
       match (op,t1) with
       |(Numerateur,Rat)->(AstType.Unaire(Numerateur,ne1),Int)
       |(Denominateur,Rat)->(AstType.Unaire(Denominateur,ne1),Int)
-      |_->raise (TypeInattendu(Rat,t1))
+      |_->raise (TypeInattendu(t1,Rat))
       end
   | AstTds.Booleen b -> (AstType.Booleen b,Bool)
   | AstTds.Entier i -> (AstType.Entier i,Int)
   | AstTds.AppelFonction (info,le) ->
-    begin
+    
       let liste_analyse_arg=List.map(analyse_type_expression) le in let liste_type_arg=List.map(snd) liste_analyse_arg in
+      begin
       match info_ast_to_info info with
       |InfoFun(_,tr,lt)->if est_compatible_list lt liste_type_arg then let nle=List.map(fst) liste_analyse_arg in (AstType.AppelFonction(info,nle),tr)
-      else raise (TypesParametresInattendus(lt,liste_type_arg))
-      |InfoVar(n,_,_,_)->raise (MauvaiseUtilisationIdentifiant n)
-      |InfoConst(n,_)->raise (MauvaiseUtilisationIdentifiant n)
-    end
-      (*begin
-        match chercherGlobalement tds n with
-        | None ->
-          (* L'identifiant n'est pas trouvé dans la tds globale. *)
-          raise (IdentifiantNonDeclare n)
-        | Some info ->
-          (* L'identifiant est trouvé dans la tds globale,
-          il a donc déjà été déclaré. L'information associée est récupérée. *)
-          begin
-            match info_ast_to_info info with
-            | InfoFun _ ->
-              (* Vérification de la bonne utilisation des identifiants dans les expressions *)
-              (* et obtention des expressions transformées *)
-              let nle = List.map (analyse_type_expression tds) le in
-              (* Renvoie du nouvel appel de fonction où le nom a été remplacé par l'information
-              et les expressions remplacées par les expressions issues de l'analyse *)
-              AstTds.AppelFonction (info, nle)
-            | _ ->
-              (* Appel d'une variable ou d'une constante *)
-              raise (MauvaiseUtilisationIdentifiant n)
-          end
-      end*)
-  
+      else raise (TypesParametresInattendus(liste_type_arg,lt))
+      |_->failwith "erreur"
+      
+      end
+
 
 (* analyse_tds_instruction :info_ast option -> AstSyntax.instruction -> AstTds.instruction *)
 (* Paramètre oia : None si l'instruction i est dans le bloc principal,
@@ -97,20 +72,20 @@ en une instruction de type AstType.instruction *)
 (* Erreur si mauvaise utilisation des identifiants *)
 let rec analyse_type_instruction i =
   match i with
-  | AstTds.Declaration (t, info, e) ->begin
+  | AstTds.Declaration (t, info, e) ->
       let (ne,te)=analyse_type_expression e in
+      (modifier_type_variable t info);
     if est_compatible t te then 
-      begin
-    (modifier_type_variable t info);
+      
     AstType.Declaration(info,ne)
-      end
-    else raise (TypeInattendu(t,te))
-  end
+      
+    else raise (TypeInattendu(te,t))
+  
   | AstTds.Affectation (info,e) ->
       let (ne,te)=analyse_type_expression e in 
       begin
         match (info_ast_to_info) info with
-        |InfoVar(_,t,_,_)->if est_compatible t te then AstType.Affectation(info,ne) else raise  (TypeInattendu(t,te))
+        |InfoVar(_,t,_,_)->if est_compatible t te then AstType.Affectation(info,ne) else raise  (TypeInattendu(te,t))
         |InfoConst(n,_)->raise (MauvaiseUtilisationIdentifiant n)
         |InfoFun(n,_,_)->raise (MauvaiseUtilisationIdentifiant n)
       end
@@ -151,10 +126,10 @@ let rec analyse_type_instruction i =
   | AstTds.Retour (e,info) ->let (ne,te)=analyse_type_expression e in
     begin 
       match info_ast_to_info info with
-      |InfoFun(_,tr,_)->if est_compatible tr te then AstType.Retour(ne,info) else raise (TypeInattendu(tr,te))
+      |InfoFun(_,tr,_)->if est_compatible tr te then AstType.Retour(ne,info) else raise (TypeInattendu(te,tr))
       |InfoVar(n,_,_,_)->raise (MauvaiseUtilisationIdentifiant n)
       |InfoConst(n,_)->raise (MauvaiseUtilisationIdentifiant n)
-      end
+    end
      
 
 (* analyse_tds_bloc : tds -> info_ast option -> AstSyntax.bloc -> AstTds.bloc *)
@@ -177,12 +152,13 @@ and analyse_type_bloc li =
 en une fonction de type AstTds.fonction *)
 (* Erreur si mauvaise utilisation des identifiants *)
 let analyse_type_fonction (AstTds.Fonction(t,info,lp,li))  = 
-begin
+
   let tp=List.map(fst) lp in
   modifier_type_fonction t tp info;
-  let _=List.map(fun (t,i)->modifier_type_variable t i) lp in let nli=analyse_type_bloc li in AstType.Fonction(info,List.map(snd) lp,nli)
+  let lst=List.map(fun (t,v)-> modifier_type_variable t v; v) lp in
+  let nli=analyse_type_bloc li in AstType.Fonction(info,lst,nli)
 
-end
+
 (* analyser : AstSyntax.programme -> AstTds.programme *)
 (* Paramètre : le programme à analyser *)
 (* Vérifie la bonne utilisation des identifiants et tranforme le programme
@@ -192,4 +168,3 @@ let analyser (AstTds.Programme (fonctions,prog)) =
   let nf = List.map (analyse_type_fonction) fonctions in
   let nb = analyse_type_bloc prog in
   AstType.Programme (nf,nb)
-end

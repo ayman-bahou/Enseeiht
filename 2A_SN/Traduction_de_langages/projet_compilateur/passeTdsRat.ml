@@ -1,7 +1,6 @@
 (* Module de la passe de gestion des identifiants *)
 (* doit être conforme à l'interface Passe *)
-module PasseTdsRat : Passe.Passe with type t1=Ast.AstSyntax.programme and type t2=Ast.AstTds.programme =
-struct
+
 
 open Tds
 open Exceptions
@@ -30,7 +29,8 @@ let rec analyse_tds_expression tds e = match e with
             il a donc déjà été déclaré. L'information associée est récupérée. *)
             begin
               match info_ast_to_info info with
-              | InfoVar _|InfoConst _ -> AstTds.Ident info
+              | InfoVar _-> AstTds.Ident info
+              |InfoConst(_,v)->AstTds.Entier v
               | _ -> raise (MauvaiseUtilisationIdentifiant n)
             end
         end
@@ -40,13 +40,13 @@ let rec analyse_tds_expression tds e = match e with
       let ne1 = analyse_tds_expression tds e1 in
       let ne2 = analyse_tds_expression tds e2 in
       (* Renvoie du nouveau binaire où les expressions ont été remplacées par les expressions issues de l'analyse *)
-      AstTds.Binaire (op, ne1, ne2)
+      AstTds.Binaire(op,ne1,ne2)
   | AstSyntax.Unaire (op,e1) ->
       (* Vérification de la bonne utilisation des identifiants dans l'expression *)
       (* et obtention de l'expression transformée *)
       let ne1 = analyse_tds_expression tds e1 in
       (* Renvoie du nouveau unaire où l'expression a été remplacée par l'expression issue de l'analyse *)
-      AstTds.Unaire (op, ne1)
+      AstTds.Unaire(op,ne1)
   | AstSyntax.Booleen b -> AstTds.Booleen b
   | AstSyntax.Entier i -> AstTds.Entier i
   | AstSyntax.AppelFonction (n,le) ->
@@ -202,27 +202,34 @@ and analyse_tds_bloc tds oia li =
 (*param tds : table de symboles locale aux variables*)
 (*param v : variable à traiter*)
 (*traiter chaque paramètre de la fonction en le cherchant dans la tds locale et on l'ajoute s'il n'est pas déclaré*)
-let traiter_param_fonction tds v=
-match chercherLocalement tds v with
-|None-> ajouter tds v (info_to_info_ast (InfoVar (v,Undefined, 0, "")))
-|Some _->raise (DoubleDeclaration v)
+
 (*traite_fonction : tds->AstSyntax.fonction->AstTds.fonction*)
 (*param maintds : table de symbole courante*)
 (* Paramètre : la fonction à analyser *)
 (*tranforme la fonction en une fonction de type AstTds.fonction*)
 let traite_fonction maintds (AstSyntax.Fonction(t,n,lp,li)) =
-let ltype=List.map(fst) lp in let lvariable=List.map(snd) lp in
-let infor=info_to_info_ast (InfoFun(n,Undefined,ltype)) in
+  let traiter_param_fonction tds (t,v)=
+  begin
+  match chercherLocalement tds v with
+  |None-> let info=(info_to_info_ast (InfoVar (v,Undefined, 0, ""))) in ajouter tds v info;
+  (t,info)
+  |Some _->raise (DoubleDeclaration v)
+  end
+in
+  let tdsbloc = creerTDSFille maintds in
+
+let nlp=List.map(traiter_param_fonction tdsbloc) lp in
+(*création de l'information de la fonction*)
+
+let infor=info_to_info_ast (InfoFun(n,Undefined,[])) in
 (*ajout de la fonction à la tds*)
 ajouter maintds n  infor;
 (*création de tds fille pour ajouter les paramètres dedans *)
-let tdsbloc = creerTDSFille maintds in
-(*traitement des paramètres*)
-let l=List.map(fun v-> traiter_param_fonction tdsbloc v )(lvariable) in
+
 (*analyse de la liste d'instruction(bloc)*)
 let nli=List.map (analyse_tds_instruction tdsbloc (Some infor) ) li in
 (*creation de la nouvelle liste de paramètres en remplacant les variables par des pointeurs*)
-let nlp=List.map(fun (t,v)->(t,info_to_info_ast (InfoVar(v,Undefined, 0, "")))) lp in 
+
 AstTds.Fonction(t,infor,nlp,nli)
 
 
@@ -249,4 +256,4 @@ let analyser (AstSyntax.Programme (fonctions,prog)) =
   let nf = List.map (analyse_tds_fonction tds) fonctions in
   let nb = analyse_tds_bloc tds None prog in
   AstTds.Programme (nf,nb)
-end
+
