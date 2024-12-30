@@ -1,0 +1,8 @@
+int* mystere (int x){
+  int * px = (new int);
+  px = &x;
+  return px;
+}
+test{
+    int * px = (new int);
+}

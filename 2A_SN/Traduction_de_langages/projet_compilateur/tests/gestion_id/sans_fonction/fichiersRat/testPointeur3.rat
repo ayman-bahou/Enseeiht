@@ -1,0 +1,6 @@
+test{
+int * px = (new int);
+int x = 423;
+px = &t;
+print (x);
+}

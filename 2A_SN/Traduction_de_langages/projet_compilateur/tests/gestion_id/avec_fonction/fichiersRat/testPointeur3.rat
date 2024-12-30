@@ -1,0 +1,12 @@
+int* mystere( int x ){
+    int * px = (new int);
+    px = &x;
+    return px; 
+}
+
+test{
+    int x = 5;
+    int * py = mystere(x);
+    px = py;
+
+}

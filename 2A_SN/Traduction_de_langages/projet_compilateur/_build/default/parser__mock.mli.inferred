@@ -11,6 +11,8 @@ type token =
   | PLUS
   | PF
   | NUM
+  | NULL
+  | NEW
   | MULT
   | INT
   | INF
@@ -27,6 +29,7 @@ type token =
   | CF
   | BOOL
   | AO
+  | AND
   | AF
 val menhir_begin_marker : int
 val xv_typ : Type.typ
@@ -47,4 +50,5 @@ val xv_i : Ast.AstSyntax.instruction
 val xv_fonc : Ast.AstSyntax.fonction
 val xv_e : Ast.AstSyntax.expression
 val xv_bloc : Ast.AstSyntax.bloc
+val xv_a : Ast.AstSyntax.affectable
 val menhir_end_marker : int

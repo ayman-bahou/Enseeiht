@@ -14,6 +14,8 @@ type token =
   | PLUS
   | PF
   | NUM
+  | NULL
+  | NEW
   | MULT
   | INT
   | INF
@@ -30,6 +32,7 @@ type token =
   | CF
   | BOOL
   | AO
+  | AND
   | AF
 
 (* This exception is raised by the monolithic API functions. *)
