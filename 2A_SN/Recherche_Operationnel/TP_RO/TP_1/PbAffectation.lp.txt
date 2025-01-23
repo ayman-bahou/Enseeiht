@@ -1,0 +1,63 @@
+\* Problem: PbAffectation *\
+
+Maximize
+ BeneficeTotal: + 2 Q(p1,t1) + 5 Q(p2,t1) + Q(p3,t1) + 3 Q(p4,t1)
+ + 3 Q(p1,t2) + 6 Q(p2,t2) + 7 Q(p3,t2) + 4 Q(p4,t2) + 9 Q(p1,t3)
+ + 8 Q(p2,t3) + 5 Q(p3,t3) + 9 Q(p4,t3) + 2 Q(p1,t4) + 3 Q(p2,t4)
+ + 4 Q(p3,t4) + 5 Q(p4,t4)
+
+Subject To
+ RespectUneTacheParPersonne(t1): + Q(p1,t1) + Q(p2,t1) + Q(p3,t1)
+ + Q(p4,t1) = 1
+ RespectUneTacheParPersonne(t2): + Q(p1,t2) + Q(p2,t2) + Q(p3,t2)
+ + Q(p4,t2) = 1
+ RespectUneTacheParPersonne(t3): + Q(p1,t3) + Q(p2,t3) + Q(p3,t3)
+ + Q(p4,t3) = 1
+ RespectUneTacheParPersonne(t4): + Q(p1,t4) + Q(p2,t4) + Q(p3,t4)
+ + Q(p4,t4) = 1
+ RespectUnePersonneParTache(p1): + Q(p1,t1) + Q(p1,t2) + Q(p1,t3)
+ + Q(p1,t4) = 1
+ RespectUnePersonneParTache(p2): + Q(p2,t1) + Q(p2,t2) + Q(p2,t3)
+ + Q(p2,t4) = 1
+ RespectUnePersonneParTache(p3): + Q(p3,t1) + Q(p3,t2) + Q(p3,t3)
+ + Q(p3,t4) = 1
+ RespectUnePersonneParTache(p4): + Q(p4,t1) + Q(p4,t2) + Q(p4,t3)
+ + Q(p4,t4) = 1
+
+Bounds
+ 0 <= Q(p1,t1) <= 1
+ 0 <= Q(p2,t1) <= 1
+ 0 <= Q(p3,t1) <= 1
+ 0 <= Q(p4,t1) <= 1
+ 0 <= Q(p1,t2) <= 1
+ 0 <= Q(p2,t2) <= 1
+ 0 <= Q(p3,t2) <= 1
+ 0 <= Q(p4,t2) <= 1
+ 0 <= Q(p1,t3) <= 1
+ 0 <= Q(p2,t3) <= 1
+ 0 <= Q(p3,t3) <= 1
+ 0 <= Q(p4,t3) <= 1
+ 0 <= Q(p1,t4) <= 1
+ 0 <= Q(p2,t4) <= 1
+ 0 <= Q(p3,t4) <= 1
+ 0 <= Q(p4,t4) <= 1
+
+Generals
+ Q(p1,t1)
+ Q(p2,t1)
+ Q(p3,t1)
+ Q(p4,t1)
+ Q(p1,t2)
+ Q(p2,t2)
+ Q(p3,t2)
+ Q(p4,t2)
+ Q(p1,t3)
+ Q(p2,t3)
+ Q(p3,t3)
+ Q(p4,t3)
+ Q(p1,t4)
+ Q(p2,t4)
+ Q(p3,t4)
+ Q(p4,t4)
+
+End

@@ -1,0 +1,92 @@
+###############################  Model ###############################
+
+
+
+###############################  Sets  ###############################
+
+set DEMANDES; 
+
+set FLUIDES;
+
+set MAGASINS;	
+
+################### Variables ###################
+ 
+var QUANTITE{i in DEMANDES, j in MAGASINS, f in FLUIDES }, >=0; 
+
+var EXPEDITIONS{i in DEMANDES, j in MAGASINS}, binary;
+
+
+###################  Constants: Data to load   #########################
+
+param DemandeFluide{i in DEMANDES, j in FLUIDES}; 
+
+param Stock {i in MAGASINS, j in FLUIDES}; 
+
+param coutdexpeditionUnit {i in MAGASINS, j in FLUIDES};
+
+param coutdexpeditionFixe {i in DEMANDES, j in MAGASINS};
+
+param coutdexpeditionVar {i in DEMANDES, j in MAGASINS};
+
+################### Constraints ###################
+
+
+s.t. RespectDEffectueEnM{i in DEMANDES, f in FLUIDES}:
+  sum{j in MAGASINS} QUANTITE[i,j,f] = DemandeFluide[i,f];
+
+s.t. RespectStockage{m in MAGASINS, i in FLUIDES}:
+  sum{j in DEMANDES} QUANTITE[j,m,i] <= Stock[m,i];
+  
+s.t. RespectLivraisonVersClient{i in DEMANDES}:
+  sum{j in MAGASINS} EXPEDITIONS[i,j] = 1;
+
+
+###### Objective ######
+
+minimize CoutTotal: 
+	 (sum{i in FLUIDES} sum{j in MAGASINS} sum{d in DEMANDES} coutdexpeditionUnit[j,i]*QUANTITE[d,j,i]) + (sum{j in MAGASINS} sum{i in DEMANDES} (coutdexpeditionFixe[i,j] + coutdexpeditionVar[i,j])*EXPEDITIONS[i,j])  ; 
+
+
+
+
+
+data;
+
+set DEMANDES := 
+D1
+D2;
+
+set FLUIDES :=
+F1
+F2;
+
+set MAGASINS :=
+M1
+M2
+M3;
+
+
+param DemandeFluide: F1 F2 :=
+D1 2 0
+D2 1 3;
+
+param Stock: F1 F2 :=
+M1 2.5 1
+M2 1 2
+M3 2 1;
+
+param coutdexpeditionUnit: F1 F2 :=
+M1 1 1
+M2 2 3
+M3 3 2;
+
+param coutdexpeditionFixe: M1 M2 M3 :=
+D1 110 90 100
+D2 110 90 100;
+
+param coutdexpeditionVar: M1 M2 M3 :=
+D1 10 1 5
+D2 2 20 10;
+
+end;

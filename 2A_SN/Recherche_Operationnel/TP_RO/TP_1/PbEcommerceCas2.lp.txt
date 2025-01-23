@@ -1,0 +1,155 @@
+\* Problem: PbEcommerceCas2 *\
+
+Minimize
+ DistanceTotal: + X1(ALPHA,C1) + X1(ALPHA,C2) + 10 X1(ALPHA,C3)
+ + 12 X1(ALPHA,C4) + 12 X1(ALPHA,C5) + X1(C1,ALPHA) + X1(C1,C2)
+ + 8 X1(C1,C3) + 10 X1(C1,C4) + 11 X1(C1,C5) + X1(C2,ALPHA) + X1(C2,C1)
+ + 8 X1(C2,C3) + 11 X1(C2,C4) + 10 X1(C2,C5) + 10 X1(C3,ALPHA)
+ + 8 X1(C3,C1) + 8 X1(C3,C2) + X1(C3,C4) + X1(C3,C5) + 12 X1(C4,ALPHA)
+ + 11 X1(C4,C1) + 11 X1(C4,C2) + X1(C4,C3) + X1(C4,C5) + 12 X1(C5,ALPHA)
+ + 10 X1(C5,C1) + 10 X1(C5,C2) + X1(C5,C3) + X1(C5,C4)
+
+Subject To
+ RespectSeulVisite(ALPHA): + X1(ALPHA,ALPHA) + X1(ALPHA,C1)
+ + X1(ALPHA,C2) + X1(ALPHA,C3) + X1(ALPHA,C4) + X1(ALPHA,C5) = 1
+ RespectSeulVisite(C1): + X1(C1,ALPHA) + X1(C1,C1) + X1(C1,C2)
+ + X1(C1,C3) + X1(C1,C4) + X1(C1,C5) = 1
+ RespectSeulVisite(C2): + X1(C2,ALPHA) + X1(C2,C1) + X1(C2,C2)
+ + X1(C2,C3) + X1(C2,C4) + X1(C2,C5) = 1
+ RespectSeulVisite(C3): + X1(C3,ALPHA) + X1(C3,C1) + X1(C3,C2)
+ + X1(C3,C3) + X1(C3,C4) + X1(C3,C5) = 1
+ RespectSeulVisite(C4): + X1(C4,ALPHA) + X1(C4,C1) + X1(C4,C2)
+ + X1(C4,C3) + X1(C4,C4) + X1(C4,C5) = 1
+ RespectSeulVisite(C5): + X1(C5,ALPHA) + X1(C5,C1) + X1(C5,C2)
+ + X1(C5,C3) + X1(C5,C4) + X1(C5,C5) = 1
+ RespectSeulQuitte(ALPHA): + X1(ALPHA,ALPHA) + X1(C1,ALPHA)
+ + X1(C2,ALPHA) + X1(C3,ALPHA) + X1(C4,ALPHA) + X1(C5,ALPHA) = 1
+ RespectSeulQuitte(C1): + X1(ALPHA,C1) + X1(C1,C1) + X1(C2,C1)
+ + X1(C3,C1) + X1(C4,C1) + X1(C5,C1) = 1
+ RespectSeulQuitte(C2): + X1(ALPHA,C2) + X1(C1,C2) + X1(C2,C2)
+ + X1(C3,C2) + X1(C4,C2) + X1(C5,C2) = 1
+ RespectSeulQuitte(C3): + X1(ALPHA,C3) + X1(C1,C3) + X1(C2,C3)
+ + X1(C3,C3) + X1(C4,C3) + X1(C5,C3) = 1
+ RespectSeulQuitte(C4): + X1(ALPHA,C4) + X1(C1,C4) + X1(C2,C4)
+ + X1(C3,C4) + X1(C4,C4) + X1(C5,C4) = 1
+ RespectSeulQuitte(C5): + X1(ALPHA,C5) + X1(C1,C5) + X1(C2,C5)
+ + X1(C3,C5) + X1(C4,C5) + X1(C5,C5) = 1
+ RespectDeparArr: + X1(ALPHA,ALPHA) + X1(C1,C1) + X1(C2,C2) + X1(C3,C3)
+ + X1(C4,C4) + X1(C5,C5) = -0
+ RespectSousTournee(C1,C2): + 6 X1(C1,C2) - X2(C2) + X2(C1) <= 5
+ RespectSousTournee(C1,C3): + 6 X1(C1,C3) + X2(C1) - X2(C3) <= 5
+ RespectSousTournee(C1,C4): + 6 X1(C1,C4) + X2(C1) - X2(C4) <= 5
+ RespectSousTournee(C1,C5): + 6 X1(C1,C5) + X2(C1) - X2(C5) <= 5
+ RespectSousTournee(C2,C1): + 6 X1(C2,C1) + X2(C2) - X2(C1) <= 5
+ RespectSousTournee(C2,C3): + 6 X1(C2,C3) + X2(C2) - X2(C3) <= 5
+ RespectSousTournee(C2,C4): + 6 X1(C2,C4) + X2(C2) - X2(C4) <= 5
+ RespectSousTournee(C2,C5): + 6 X1(C2,C5) + X2(C2) - X2(C5) <= 5
+ RespectSousTournee(C3,C1): + 6 X1(C3,C1) - X2(C1) + X2(C3) <= 5
+ RespectSousTournee(C3,C2): + 6 X1(C3,C2) - X2(C2) + X2(C3) <= 5
+ RespectSousTournee(C3,C4): + 6 X1(C3,C4) + X2(C3) - X2(C4) <= 5
+ RespectSousTournee(C3,C5): + 6 X1(C3,C5) + X2(C3) - X2(C5) <= 5
+ RespectSousTournee(C4,C1): + 6 X1(C4,C1) - X2(C1) + X2(C4) <= 5
+ RespectSousTournee(C4,C2): + 6 X1(C4,C2) - X2(C2) + X2(C4) <= 5
+ RespectSousTournee(C4,C3): + 6 X1(C4,C3) - X2(C3) + X2(C4) <= 5
+ RespectSousTournee(C4,C5): + 6 X1(C4,C5) + X2(C4) - X2(C5) <= 5
+ RespectSousTournee(C5,C1): + 6 X1(C5,C1) - X2(C1) + X2(C5) <= 5
+ RespectSousTournee(C5,C2): + 6 X1(C5,C2) - X2(C2) + X2(C5) <= 5
+ RespectSousTournee(C5,C3): + 6 X1(C5,C3) - X2(C3) + X2(C5) <= 5
+ RespectSousTournee(C5,C4): + 6 X1(C5,C4) - X2(C4) + X2(C5) <= 5
+ RespectPremierTour(ALPHA): + X2(ALPHA) = 1
+ RespectTour(ALPHA): + X2(ALPHA) - ~r_35 = 1
+ RespectTour(C1): + X2(C1) - ~r_36 = 1
+ RespectTour(C2): + X2(C2) - ~r_37 = 1
+ RespectTour(C3): + X2(C3) - ~r_38 = 1
+ RespectTour(C4): + X2(C4) - ~r_39 = 1
+ RespectTour(C5): + X2(C5) - ~r_40 = 1
+
+Bounds
+ 0 <= ~r_35 <= 5
+ 0 <= ~r_36 <= 5
+ 0 <= ~r_37 <= 5
+ 0 <= ~r_38 <= 5
+ 0 <= ~r_39 <= 5
+ 0 <= ~r_40 <= 5
+ 0 <= X1(ALPHA,ALPHA) <= 1
+ 0 <= X1(ALPHA,C1) <= 1
+ 0 <= X1(ALPHA,C2) <= 1
+ 0 <= X1(ALPHA,C3) <= 1
+ 0 <= X1(ALPHA,C4) <= 1
+ 0 <= X1(ALPHA,C5) <= 1
+ 0 <= X1(C1,ALPHA) <= 1
+ 0 <= X1(C1,C1) <= 1
+ 0 <= X1(C1,C2) <= 1
+ 0 <= X1(C1,C3) <= 1
+ 0 <= X1(C1,C4) <= 1
+ 0 <= X1(C1,C5) <= 1
+ 0 <= X1(C2,ALPHA) <= 1
+ 0 <= X1(C2,C1) <= 1
+ 0 <= X1(C2,C2) <= 1
+ 0 <= X1(C2,C3) <= 1
+ 0 <= X1(C2,C4) <= 1
+ 0 <= X1(C2,C5) <= 1
+ 0 <= X1(C3,ALPHA) <= 1
+ 0 <= X1(C3,C1) <= 1
+ 0 <= X1(C3,C2) <= 1
+ 0 <= X1(C3,C3) <= 1
+ 0 <= X1(C3,C4) <= 1
+ 0 <= X1(C3,C5) <= 1
+ 0 <= X1(C4,ALPHA) <= 1
+ 0 <= X1(C4,C1) <= 1
+ 0 <= X1(C4,C2) <= 1
+ 0 <= X1(C4,C3) <= 1
+ 0 <= X1(C4,C4) <= 1
+ 0 <= X1(C4,C5) <= 1
+ 0 <= X1(C5,ALPHA) <= 1
+ 0 <= X1(C5,C1) <= 1
+ 0 <= X1(C5,C2) <= 1
+ 0 <= X1(C5,C3) <= 1
+ 0 <= X1(C5,C4) <= 1
+ 0 <= X1(C5,C5) <= 1
+
+Generals
+ X1(ALPHA,ALPHA)
+ X1(ALPHA,C1)
+ X1(ALPHA,C2)
+ X1(ALPHA,C3)
+ X1(ALPHA,C4)
+ X1(ALPHA,C5)
+ X1(C1,ALPHA)
+ X1(C1,C1)
+ X1(C1,C2)
+ X1(C1,C3)
+ X1(C1,C4)
+ X1(C1,C5)
+ X1(C2,ALPHA)
+ X1(C2,C1)
+ X1(C2,C2)
+ X1(C2,C3)
+ X1(C2,C4)
+ X1(C2,C5)
+ X1(C3,ALPHA)
+ X1(C3,C1)
+ X1(C3,C2)
+ X1(C3,C3)
+ X1(C3,C4)
+ X1(C3,C5)
+ X1(C4,ALPHA)
+ X1(C4,C1)
+ X1(C4,C2)
+ X1(C4,C3)
+ X1(C4,C4)
+ X1(C4,C5)
+ X1(C5,ALPHA)
+ X1(C5,C1)
+ X1(C5,C2)
+ X1(C5,C3)
+ X1(C5,C4)
+ X1(C5,C5)
+ X2(C2)
+ X2(C1)
+ X2(C3)
+ X2(C4)
+ X2(C5)
+ X2(ALPHA)
+
+End

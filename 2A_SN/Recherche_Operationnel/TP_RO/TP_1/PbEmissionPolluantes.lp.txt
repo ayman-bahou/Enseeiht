@@ -1,0 +1,103 @@
+\* Problem: PbEmissionPolluantes *\
+
+Minimize
+ TotalEmission: + 0.000118 qt(M1,D1,P1) + 1.18e-05 qt(M2,D1,P1)
+ + 5.9e-05 qt(M3,D1,P1) + 0.000118 qt(M1,D1,P2) + 1.18e-05 qt(M2,D1,P2)
+ + 5.9e-05 qt(M3,D1,P2) + 2.36e-05 qt(M1,D2,P1) + 0.000236 qt(M2,D2,P1)
+ + 0.000118 qt(M3,D2,P1) + 2.36e-05 qt(M1,D2,P2) + 0.000236 qt(M2,D2,P2)
+ + 0.000118 qt(M3,D2,P2)
+\* constant term = 20.544 *\
+
+Subject To
+ RespectDemandes(D1,P1): + qt(M1,D1,P1) + qt(M2,D1,P1) + qt(M3,D1,P1)
+ <= 2
+ RespectDemandes(D1,P2): + qt(M1,D1,P2) + qt(M2,D1,P2) + qt(M3,D1,P2)
+ <= 4
+ RespectDemandes(D2,P1): + qt(M1,D2,P1) + qt(M2,D2,P1) + qt(M3,D2,P1)
+ <= 7
+ RespectDemandes(D2,P2): + qt(M1,D2,P2) + qt(M2,D2,P2) + qt(M3,D2,P2)
+ <= 6
+ RespectStock(D1,P1,M1): - 10 livraison(M1,D1) + qt(M1,D1,P1) <= -0
+ RespectStock(D1,P1,M2): - livraison(M2,D1) + qt(M2,D1,P1) <= -0
+ RespectStock(D1,P1,M3): - 13 livraison(M3,D1) + qt(M3,D1,P1) <= -0
+ RespectStock(D1,P2,M1): - 4 livraison(M1,D1) + qt(M1,D1,P2) <= -0
+ RespectStock(D1,P2,M2): - 20 livraison(M2,D1) + qt(M2,D1,P2) <= -0
+ RespectStock(D1,P2,M3): - 3 livraison(M3,D1) + qt(M3,D1,P2) <= -0
+ RespectStock(D2,P1,M1): - 10 livraison(M1,D2) + qt(M1,D2,P1) <= -0
+ RespectStock(D2,P1,M2): - livraison(M2,D2) + qt(M2,D2,P1) <= -0
+ RespectStock(D2,P1,M3): - 13 livraison(M3,D2) + qt(M3,D2,P1) <= -0
+ RespectStock(D2,P2,M1): - 4 livraison(M1,D2) + qt(M1,D2,P2) <= -0
+ RespectStock(D2,P2,M2): - 20 livraison(M2,D2) + qt(M2,D2,P2) <= -0
+ RespectStock(D2,P2,M3): - 3 livraison(M3,D2) + qt(M3,D2,P2) <= -0
+ RespectPreTour(M1): + livraison(M1,D1) + livraison(M1,D2)
+ - expedition(M1) = -0
+ RespectPreTour(M2): + livraison(M2,D1) + livraison(M2,D2)
+ - expedition(M2) = -0
+ RespectPreTour(M3): + livraison(M3,D1) + livraison(M3,D2)
+ - expedition(M3) = -0
+ RespectLivreurMagasin(M1,P1): - 2 livraison(M1,D1) - 7 livraison(M1,D2)
+ + qt(M1,D1,P1) + qt(M1,D2,P1) = -0
+ RespectLivreurMagasin(M1,P2): - 4 livraison(M1,D1) - 6 livraison(M1,D2)
+ + qt(M1,D1,P2) + qt(M1,D2,P2) = -0
+ RespectLivreurMagasin(M2,P1): - 2 livraison(M2,D1) - 7 livraison(M2,D2)
+ + qt(M2,D1,P1) + qt(M2,D2,P1) = -0
+ RespectLivreurMagasin(M2,P2): - 4 livraison(M2,D1) - 6 livraison(M2,D2)
+ + qt(M2,D1,P2) + qt(M2,D2,P2) = -0
+ RespectLivreurMagasin(M3,P1): - 2 livraison(M3,D1) - 7 livraison(M3,D2)
+ + qt(M3,D1,P1) + qt(M3,D2,P1) = -0
+ RespectLivreurMagasin(M3,P2): - 4 livraison(M3,D1) - 6 livraison(M3,D2)
+ + qt(M3,D1,P2) + qt(M3,D2,P2) = -0
+ RespectSatifaitDemandes(D1,P1,M1): - 2 livraison(M1,D1) + qt(M1,D1,P1)
+ <= -0
+ RespectSatifaitDemandes(D1,P1,M2): - 2 livraison(M2,D1) + qt(M2,D1,P1)
+ <= -0
+ RespectSatifaitDemandes(D1,P1,M3): - 2 livraison(M3,D1) + qt(M3,D1,P1)
+ <= -0
+ RespectSatifaitDemandes(D1,P2,M1): - 4 livraison(M1,D1) + qt(M1,D1,P2)
+ <= -0
+ RespectSatifaitDemandes(D1,P2,M2): - 4 livraison(M2,D1) + qt(M2,D1,P2)
+ <= -0
+ RespectSatifaitDemandes(D1,P2,M3): - 4 livraison(M3,D1) + qt(M3,D1,P2)
+ <= -0
+ RespectSatifaitDemandes(D2,P1,M1): - 7 livraison(M1,D2) + qt(M1,D2,P1)
+ <= -0
+ RespectSatifaitDemandes(D2,P1,M2): - 7 livraison(M2,D2) + qt(M2,D2,P1)
+ <= -0
+ RespectSatifaitDemandes(D2,P1,M3): - 7 livraison(M3,D2) + qt(M3,D2,P1)
+ <= -0
+ RespectSatifaitDemandes(D2,P2,M1): - 6 livraison(M1,D2) + qt(M1,D2,P2)
+ <= -0
+ RespectSatifaitDemandes(D2,P2,M2): - 6 livraison(M2,D2) + qt(M2,D2,P2)
+ <= -0
+ RespectSatifaitDemandes(D2,P2,M3): - 6 livraison(M3,D2) + qt(M3,D2,P2)
+ <= -0
+ RespectExpDuMagasin(M1): - livraison(M1,D1) - livraison(M1,D2)
+ + expedition(M1) <= -0
+ RespectExpDuMagasin(M2): - livraison(M2,D1) - livraison(M2,D2)
+ + expedition(M2) <= -0
+ RespectExpDuMagasin(M3): - livraison(M3,D1) - livraison(M3,D2)
+ + expedition(M3) <= -0
+
+Bounds
+ 0 <= livraison(M1,D1) <= 1
+ 0 <= livraison(M2,D1) <= 1
+ 0 <= livraison(M3,D1) <= 1
+ 0 <= livraison(M1,D2) <= 1
+ 0 <= livraison(M2,D2) <= 1
+ 0 <= livraison(M3,D2) <= 1
+ 0 <= expedition(M1) <= 1
+ 0 <= expedition(M2) <= 1
+ 0 <= expedition(M3) <= 1
+
+Generals
+ livraison(M1,D1)
+ livraison(M2,D1)
+ livraison(M3,D1)
+ livraison(M1,D2)
+ livraison(M2,D2)
+ livraison(M3,D2)
+ expedition(M1)
+ expedition(M2)
+ expedition(M3)
+
+End

@@ -1,0 +1,25 @@
+\* Problem: Assemblage de velo *\
+
+Maximize
+Benefice: 300 XS + 700 XC 
+
+Subject To
+Nbheuresparsem : 6 XC + 5 XS <= 6000
+SurfaceParking : 25 XC + 10 XS <= 15000
+LimiteRessource : XC <= 700
+
+\* To declare integer variables :   
+\* Integer 
+\* XC 
+\* XS  
+
+\* To declare binary variables :  
+\* Binary 
+\* XC 
+\* XS 
+
+End
+
+
+ 
+
